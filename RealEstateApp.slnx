@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="RealEstateApp.API/RealEstateApp.API.csproj" />
+  <Project Path="RealEstateApp.Application/RealEstateApp.Application.csproj" />
+  <Project Path="RealEstateApp.Domain/RealEstateApp.Domain.csproj" />
+  <Project Path="RealEstateApp.Infrastructure/RealEstateApp.Infrastructure.csproj" />
+</Solution>
