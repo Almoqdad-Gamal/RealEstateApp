@@ -3766,7 +3766,8 @@
       "Microsoft.EntityFrameworkCore >= 10.0.2",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.2",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.2",
-      "RealEstateApp.Application >= 1.0.0"
+      "RealEstateApp.Application >= 1.0.0",
+      "RealEstateApp.Domain >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -3796,6 +3797,9 @@
           "projectReferences": {
             "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj": {
               "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj"
+            },
+            "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj": {
+              "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj"
             }
           }
         }

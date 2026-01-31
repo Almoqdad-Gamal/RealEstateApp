@@ -708,6 +708,9 @@
             "projectReferences": {
               "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj": {
                 "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj"
+              },
+              "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj": {
+                "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj"
               }
             }
           }
