@@ -10,11 +10,11 @@
         "projectUniqueName": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.API\\RealEstateApp.API.csproj",
         "projectName": "RealEstateApp.API",
         "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.API\\RealEstateApp.API.csproj",
-        "packagesPath": "C:\\Users\\PoLaR\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\almokdad\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PoLaR\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\almokdad\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -513,11 +513,11 @@
         "projectUniqueName": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj",
         "projectName": "RealEstateApp.Application",
         "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\RealEstateApp.Application.csproj",
-        "packagesPath": "C:\\Users\\PoLaR\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\almokdad\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PoLaR\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\almokdad\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -860,11 +860,11 @@
         "projectUniqueName": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj",
         "projectName": "RealEstateApp.Domain",
         "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\RealEstateApp.Domain.csproj",
-        "packagesPath": "C:\\Users\\PoLaR\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\almokdad\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PoLaR\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\almokdad\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -1193,11 +1193,11 @@
         "projectUniqueName": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Infrastructure\\RealEstateApp.Infrastructure.csproj",
         "projectName": "RealEstateApp.Infrastructure",
         "projectPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Infrastructure\\RealEstateApp.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\PoLaR\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\almokdad\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\Projects\\RealEstateApp\\RealEstateApp.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PoLaR\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\almokdad\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
