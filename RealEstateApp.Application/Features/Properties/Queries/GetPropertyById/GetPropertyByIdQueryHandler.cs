@@ -19,7 +19,7 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetPropertyById
             var property = await _unitOfWork.Properties.GetPropertyWithDetailsAsync(request.PropertyId);
 
             if (property == null)
-                return null;
+                throw new Exception("Property not found");
 
             // Calculate average rating
             var avgRating = await _unitOfWork.Reviews.GetPropertyAverageRatingAsync(property.Id);

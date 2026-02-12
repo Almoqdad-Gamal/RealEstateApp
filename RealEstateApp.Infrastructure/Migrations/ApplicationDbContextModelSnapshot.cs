@@ -134,13 +134,13 @@ namespace RealEstateApp.Infrastructure.Migrations
                     b.Property<bool>("IsFurnished")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Latitude")
+                    b.Property<double?>("Latitude")
                         .HasColumnType("float");
 
                     b.Property<int>("ListingType")
                         .HasColumnType("int");
 
-                    b.Property<double>("Longitude")
+                    b.Property<double?>("Longitude")
                         .HasColumnType("float");
 
                     b.Property<int>("OwnerId")

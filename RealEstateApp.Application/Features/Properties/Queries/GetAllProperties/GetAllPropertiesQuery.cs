@@ -5,4 +5,4 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
 {
     public class GetAllPropertiesQuery : IRequest<IEnumerable<PropertyDto>>
     {}
-}Get
+}
