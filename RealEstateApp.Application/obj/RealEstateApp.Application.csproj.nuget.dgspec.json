@@ -67,6 +67,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[14.0.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.16.0, )"
             }
           },
           "imports": [

@@ -12,7 +12,6 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task<ReviewDto> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
             // Check if the property is existing
