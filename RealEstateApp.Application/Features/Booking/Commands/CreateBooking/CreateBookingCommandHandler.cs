@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Booking;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Domain.Enums;
 
@@ -17,12 +18,12 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
             // Check if the property is existing
             var property = await _unitOfWork.Properties.GetByIdAsync(request.PropertyId);
             if(property == null)
-                throw new Exception("Property not found");
+                throw new NotFoundException("Property", request.PropertyId);
 
             // Check if the client is existing
             var client = await _unitOfWork.Users.GetByIdAsync(request.ClientId);
             if(client == null)
-                throw new Exception("Client not found");
+                throw new NotFoundException("Client", request.ClientId);
 
             // Check if the booking is available
             var isAvailable = await _unitOfWork.Bookings.IsPropertyAvilableAsync(
@@ -31,7 +32,7 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
                 request.BookingTime);
 
             if(!isAvailable)
-                throw new Exception("This time is already booked");
+                throw new ConflictException("This time slot is already booked for this property.");
 
             // Create booking
             var booking = new Domain.Entities.Booking

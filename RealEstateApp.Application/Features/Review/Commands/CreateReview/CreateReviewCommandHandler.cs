@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Review;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 
 namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
@@ -17,17 +18,17 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
             // Check if the property is existing
             var property = await _unitOfWork.Properties.GetByIdAsync(request.PropertyId);
             if(property == null)
-                throw new Exception("Property not found");
+                throw new NotFoundException("Property", request.PropertyId);
 
             // Check if the user is existing
             var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
             if(user == null)
-                throw new Exception("User not found");
+                throw new NotFoundException("User", request.UserId);
 
             // Check for any previous reviews
             var hasReviewed = await _unitOfWork.Reviews.HasUserReviewedPropertyAsync(request.UserId, request.PropertyId);
             if(hasReviewed)
-                throw new Exception("You have previously reviewed this property");
+                throw new ConflictException("You have already reviewed this property.");
 
             // Create review
             var review = new Domain.Entities.Review

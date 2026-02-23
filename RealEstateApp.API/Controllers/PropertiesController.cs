@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Application.Features.Properties.Commands.CreateProperty;
 using RealEstateApp.Application.Features.Properties.Commands.DeleteProperty;
@@ -24,8 +25,7 @@ namespace RealEstateApp.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllPropertiesQuery();
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetAllPropertiesQuery());
             return Ok(result);
         }
         
@@ -33,12 +33,7 @@ namespace RealEstateApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById (int id)
         {
-            var query = new GetPropertyByIdQuery(id);
-            var result = await _mediator.Send(query);
-
-            if(result == null)
-                return NotFound(new {message = "Property not found"});
-
+            var result = await _mediator.Send(new GetPropertyByIdQuery(id));
             return Ok(result);
         }
 
@@ -54,53 +49,29 @@ namespace RealEstateApp.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create ([FromBody] CreatePropertyCommand command)
         {
-            try
-            {
-                var result = await _mediator.Send(command);
-                return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
         }
 
         // Updates an existing property
         [HttpPut("{id}")]
         public async Task<IActionResult> Update (int id, UpdatePropertyCommand command)
         {
-            try
-            {
-                if (id != command.Id)
-                    return BadRequest(new {message = "ID mismatch"});
+            if (id != command.Id)
+                return BadRequest(new {message = "ID mismatch"});
+            
+            var result = await _mediator.Send(command);
+            return Ok(result);
 
-                var result = await _mediator.Send(command);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
         }
 
         // Deletes property by ID 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete (int id)
         {
-            try
-            {
-                var command = new DeletePropertyCommand(id);
-                var result = await _mediator.Send(command);
+            await _mediator.Send(new DeletePropertyCommand(id));
+            return NoContent();
 
-                if(!result)
-                    return NotFound(new {messege = "Property not found"});
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
         }
     }
 }

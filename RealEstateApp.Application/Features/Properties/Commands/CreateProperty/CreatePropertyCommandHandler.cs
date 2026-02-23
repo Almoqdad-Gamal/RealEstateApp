@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Property;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Domain.Entities;
 using RealEstateApp.Domain.Enums;
@@ -19,7 +20,7 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
             var owner = await _unitOfWork.Users.GetByIdAsync(request.OwnerId);
             if(owner == null)
             {
-                throw new Exception("Owner not found");
+                throw new NotFoundException("Owner", request.OwnerId);
             }
 
             //Create property entity

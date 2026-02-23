@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.User;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 
 namespace RealEstateApp.Application.Features.Users.Commands.Login
@@ -19,12 +20,12 @@ namespace RealEstateApp.Application.Features.Users.Commands.Login
             // Search the user by his email
             var user = await _unitOfWork.Users.GetByEmailAsync(request.Email);
             if(user == null)
-                throw new Exception("Incorrect email or password");
+                throw new UnauthorizedException("Incorrect email or password.");
 
             // Check the password
             var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
             if(!isPasswordValid)
-                throw new Exception("Incorrect email or password");
+                throw new UnauthorizedException("Incorrect email or password.");
 
             // Create jwt token
             var token = _jwtService.GenerateToken(user);

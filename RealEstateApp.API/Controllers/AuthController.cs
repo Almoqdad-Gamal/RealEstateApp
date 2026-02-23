@@ -19,30 +19,16 @@ namespace RealEstateApp.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
-            try
-            {
                 var result = await _mediator.Send(command);
                 return CreatedAtAction(nameof(Register), result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
         }
 
         // Login and get jwt token
         [HttpPost("Login")]
         public async Task<IActionResult> Login ([FromBody] LoginCommand command)
         {
-            try
-            {
                 var result = await _mediator.Send(command);
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(new {message = ex.Message});
-            }
         }
     }
 }

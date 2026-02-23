@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RealEstateApp.API.Middleware;
 using RealEstateApp.Application.Behaviors;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Infrastructure.Data;
@@ -82,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 

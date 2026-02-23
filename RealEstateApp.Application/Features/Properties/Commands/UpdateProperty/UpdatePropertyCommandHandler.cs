@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Property;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 
 namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
@@ -18,7 +19,7 @@ namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
             var property = await _unitOfWork.Properties.GetPropertyWithDetailsAsync(request.Id);
             if(property == null)
             {
-                throw new Exception("Property not found");
+                throw new NotFoundException("Property", request.Id);
             }
 
             //Update property fields

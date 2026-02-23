@@ -2,7 +2,7 @@ using MediatR;
 
 namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
 {
-    public class DeletePropertyCommand : IRequest<bool>
+    public class DeletePropertyCommand : IRequest
     {
         public int Id { get; set; }
 

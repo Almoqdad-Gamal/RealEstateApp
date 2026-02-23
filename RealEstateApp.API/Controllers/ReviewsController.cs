@@ -19,8 +19,7 @@ namespace RealEstateApp.API.Controllers
         [HttpGet("property/{propertyId}")]
         public async Task<IActionResult> GetPropertyReviews(int propertyId)
         {
-            var query = new GetPropertyReviewsQuery(propertyId);
-            var result = await _mediatr.Send(query);
+            var result = await _mediatr.Send(new GetPropertyReviewsQuery(propertyId));
             return Ok(result);
         }
 
@@ -28,15 +27,8 @@ namespace RealEstateApp.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview ([FromBody] CreateReviewCommand command)
         {
-            try
-            {
                 var result = await _mediatr.Send(command);
                 return CreatedAtAction(nameof(GetPropertyReviews), new {propertyId = result.PropertyId}, result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.User;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Domain.Entities;
 
@@ -17,7 +18,7 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
             //Check if email already exists
             if(await _unitOfWork.Users.EmailExistsAsync(request.Email))
             {
-                throw new Exception("Email already exists");
+                throw new ConflictException("This email is already registered.");
             }
 
             //Hash password

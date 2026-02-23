@@ -1,5 +1,6 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Booking;
+using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 
 namespace RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatus
@@ -17,7 +18,7 @@ namespace RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatu
             var booking = bookings.FirstOrDefault(b => b.Id == request.BookingId);
 
             if(booking == null)
-                throw new Exception("Booking is found");
+                throw new NotFoundException("Booking", request.BookingId);
 
             booking.Status = request.Status;
             _unitOfWork.Bookings.Update(booking);
