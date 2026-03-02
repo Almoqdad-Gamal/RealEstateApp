@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,18 +48,26 @@ namespace RealEstateApp.API.Controllers
 
         // Creates a new property
         [HttpPost]
+        [Authorize(Roles = "Owner, Admin")] // Only owner and admin can create property
         public async Task<IActionResult> Create ([FromBody] CreatePropertyCommand command)
         {
+            var ownerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+                command.OwnerId = ownerId;
+
             var result = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
         }
 
         // Updates an existing property
         [HttpPut("{id}")]
+        [Authorize(Roles = "Owner, Admin")]
         public async Task<IActionResult> Update (int id, UpdatePropertyCommand command)
         {
             if (id != command.Id)
                 return BadRequest(new {message = "ID mismatch"});
+
+            command.RequestingUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            command.RequestingRole = User.FindFirst(ClaimTypes.Role)!.Value;
             
             var result = await _mediator.Send(command);
             return Ok(result);
@@ -67,6 +76,7 @@ namespace RealEstateApp.API.Controllers
 
         // Deletes property by ID 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Owner, Admin")]
         public async Task<IActionResult> Delete (int id)
         {
             await _mediator.Send(new DeletePropertyCommand(id));

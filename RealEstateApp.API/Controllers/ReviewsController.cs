@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Application.Features.Review.Commands.CreateReview;
 using RealEstateApp.Application.Features.Review.Queries.GetPropertyReviews;
@@ -25,10 +27,14 @@ namespace RealEstateApp.API.Controllers
 
         // Create new review
         [HttpPost]
+        [Authorize(Roles = "Client, Admin")]
         public async Task<IActionResult> CreateReview ([FromBody] CreateReviewCommand command)
         {
-                var result = await _mediatr.Send(command);
-                return CreatedAtAction(nameof(GetPropertyReviews), new {propertyId = result.PropertyId}, result);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            command.UserId = userId;
+
+            var result = await _mediatr.Send(command);
+            return CreatedAtAction(nameof(GetPropertyReviews), new {propertyId = result.PropertyId}, result);
         }
     }
 }

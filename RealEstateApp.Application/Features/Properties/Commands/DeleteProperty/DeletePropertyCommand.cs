@@ -10,5 +10,7 @@ namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
         {
             Id = id;
         }
+        public int RequestingUserId { get; set; }
+        public string RequestingRole { get; set; } = string.Empty;
     }
 }

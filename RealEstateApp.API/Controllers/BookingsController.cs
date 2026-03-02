@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Application.Features.Booking.Commands.CreateBooking;
 using RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatus;
@@ -27,20 +29,24 @@ namespace RealEstateApp.API.Controllers
 
         // Create a new booking
         [HttpPost]
+        [Authorize(Roles = "Client, Admin")] // Only client can booking
         public async Task<IActionResult> CreateBooking ([FromBody] CreateBookingCommand command)
         {
+            var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            command.ClientId = clientId;
             
-                var result = await _mediator.Send(command);
-                return CreatedAtAction(nameof(GetUserBookings), new {userId = result.ClientId}, result);
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetUserBookings), new {userId = result.ClientId}, result);
         }
 
         // Update the booking status
         [HttpPut("{id}/status")]
+        [Authorize(Roles = "Owner, Admin")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateBookingStatusCommand command)
         {
                 command.BookingId = id;
-                var result = await _mediator.Send(command);
-                return Ok(result);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
     }

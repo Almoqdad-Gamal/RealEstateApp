@@ -22,6 +22,9 @@ namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
                 throw new NotFoundException("Property", request.Id);
             }
 
+            if(property.OwnerId != request.RequestingUserId && request.RequestingRole != "Admin")
+                throw new UnauthorizedException("You can only update your own properties.");
+
             //Update property fields
             property.Title = request.Title;
             property.Description = request.Description;

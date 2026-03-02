@@ -29,5 +29,7 @@ namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
         public bool HasGym { get; set; }
         public bool HasSecurity { get; set; }
         public bool IsFurnished { get; set; }
+        public int RequestingUserId { get; set; }
+        public string RequestingRole { get; set; } = string.Empty;
     }
 }

@@ -18,6 +18,9 @@ namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
             if(property == null)
                 throw new NotFoundException("Property", request.Id);
 
+            if (property.OwnerId != request.RequestingUserId && request.RequestingRole != "Admin")
+                throw new UnauthorizedException("You can only delete your own properties.");
+
             //Soft delete
             _unitOfWork.Properties.Delete(property);
             await _unitOfWork.SaveChangesAsync();
