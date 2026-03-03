@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Application.Interfaces;
+using RealEstateApp.Application.Models;
 using RealEstateApp.Domain.Entities;
 using RealEstateApp.Domain.Enums;
 using RealEstateApp.Infrastructure.Data;
@@ -15,13 +16,28 @@ namespace RealEstateApp.Infrastructure.Repositories
         public PropertyRepository(ApplicationDbContext context) : base(context)
         {}
 
-        public async Task<IEnumerable<Property>> GetAvillablePropertiesAsync()
+        public async Task<PaginatedResult<Property>> GetAvillablePropertiesAsync(PaginationParams pagination)
         {
-            return await _dbset
-            .Where(p => p.Status == PropertyStatus.Available)
-            .Include(p => p.Images)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+            var query = _dbset
+                .Where(p => p.Status == PropertyStatus.Available)
+                .Include(p => p.Images)
+                .Include(p => p.Owner)
+                .OrderByDescending(p => p.CreatedAt);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<Property>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize
+            };
         }
 
         public async Task<IEnumerable<Property>> GetPropertiesByCityAsync(string city)
@@ -50,9 +66,13 @@ namespace RealEstateApp.Infrastructure.Repositories
             .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<IEnumerable<Property>> SearchPropertiesAsync(string? city = null, PropertyType? type = null, ListingType? listingType = null, decimal? minPrice = null, decimal? maxPrice = null, int? minBedrooms = null)
+        public async Task<PaginatedResult<Property>> SearchPropertiesAsync(PaginationParams pagination, string? city = null, PropertyType? type = null, ListingType? listingType = null, decimal? minPrice = null, decimal? maxPrice = null, int? minBedrooms = null)
         {
-            var query = _dbset.AsQueryable();
+            var query = _dbset
+            .Include(p => p.Images)
+            .Include(p => p.Owner)
+            .Where(p => p.Status == PropertyStatus.Available)
+            .AsQueryable();
 
             //Apply filters
             if(!string.IsNullOrWhiteSpace(city))
@@ -73,13 +93,21 @@ namespace RealEstateApp.Infrastructure.Repositories
             if(minBedrooms.HasValue)
                 query = query.Where(p => p.Bedrooms >= minBedrooms.Value);
 
-            //Only availabele properties
-            query = query.Where(p => p.Status == PropertyStatus.Available);
+            var totalCount = await query.CountAsync();
 
-            return await query
-            .Include(p => p.Images)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+            var items = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<Property>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize
+            };
         }
     }
 }

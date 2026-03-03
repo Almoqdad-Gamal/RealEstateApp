@@ -1,10 +1,11 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Property;
 using RealEstateApp.Application.Interfaces;
+using RealEstateApp.Application.Models;
 
 namespace RealEstateApp.Application.Features.Properties.Queries.SearchProperties
 {
-    public class SearchPropertiesQueryHandler : IRequestHandler<SearchPropertiesQuery, IEnumerable<PropertyDto>>
+    public class SearchPropertiesQueryHandler : IRequestHandler<SearchPropertiesQuery, PaginatedResult<PropertyDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -12,9 +13,16 @@ namespace RealEstateApp.Application.Features.Properties.Queries.SearchProperties
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<PropertyDto>> Handle(SearchPropertiesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<PropertyDto>> Handle(SearchPropertiesQuery request, CancellationToken cancellationToken)
         {
-            var properties = await _unitOfWork.Properties.SearchPropertiesAsync(
+            var pagination = new PaginationParams
+            {
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+
+            var result = await _unitOfWork.Properties.SearchPropertiesAsync(
+                pagination: pagination,
                 city: request.City,
                 type: request.Type,
                 listingType: request.ListingType,
@@ -23,7 +31,7 @@ namespace RealEstateApp.Application.Features.Properties.Queries.SearchProperties
                 minBedrooms: request.MinBedrooms
             );
 
-            return properties.Select(p => new PropertyDto
+            var dtos = result.Items.Select(p => new PropertyDto
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -53,6 +61,14 @@ namespace RealEstateApp.Application.Features.Properties.Queries.SearchProperties
                 ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                 CreatedAt = p.CreatedAt
             }).ToList();
+
+            return new PaginatedResult<PropertyDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize
+            };
         }
     }
 }

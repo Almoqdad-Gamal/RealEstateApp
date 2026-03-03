@@ -1,10 +1,11 @@
 using MediatR;
 using RealEstateApp.Application.DTOs.Property;
 using RealEstateApp.Application.Interfaces;
+using RealEstateApp.Application.Models;
 
 namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
 {
-    public class GetAllPropertiesQueryHandler : IRequestHandler<GetAllPropertiesQuery, IEnumerable<PropertyDto>>
+    public class GetAllPropertiesQueryHandler : IRequestHandler<GetAllPropertiesQuery, PaginatedResult<PropertyDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -12,11 +13,16 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<PropertyDto>> Handle(GetAllPropertiesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<PropertyDto>> Handle(GetAllPropertiesQuery request, CancellationToken cancellationToken)
         {
-            var properties = await _unitOfWork.Properties.GetAvillablePropertiesAsync();
+            var pagination = new PaginationParams
+            {
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+            var result = await _unitOfWork.Properties.GetAvillablePropertiesAsync(pagination);
 
-            return properties.Select(p => new PropertyDto
+            var dtos = result.Items.Select(p => new PropertyDto
             {
                 Id = p.Id,
                 Title = p.Title,
@@ -46,6 +52,14 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
                 ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                 CreatedAt = p.CreatedAt
             }).ToList();
+
+            return new PaginatedResult<PropertyDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize
+            };
         }
     }
 }

@@ -1,3 +1,4 @@
+using RealEstateApp.Application.Models;
 using RealEstateApp.Domain.Entities;
 using RealEstateApp.Domain.Enums;
 
@@ -7,8 +8,9 @@ namespace RealEstateApp.Application.Interfaces
     {
         Task<IEnumerable<Property>> GetPropertiesByCityAsync(string city);
         Task<IEnumerable<Property>> GetPropertiesByTypeAsync(PropertyType type);
-        Task<IEnumerable<Property>> GetAvillablePropertiesAsync();
-        Task<IEnumerable<Property>> SearchPropertiesAsync(
+        Task<PaginatedResult<Property>> GetAvillablePropertiesAsync(PaginationParams pagination);
+        Task<PaginatedResult<Property>> SearchPropertiesAsync(
+            PaginationParams pagination,
             string? city = null,
             PropertyType? type = null,
             ListingType? listingType= null,
