@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RealEstateApp.Application.Features.Properties.Commands.AddPropertyImage;
 using RealEstateApp.Application.Features.Properties.Commands.CreateProperty;
 using RealEstateApp.Application.Features.Properties.Commands.DeleteProperty;
 using RealEstateApp.Application.Features.Properties.Commands.UpdateProperty;
@@ -82,6 +83,27 @@ namespace RealEstateApp.API.Controllers
             await _mediator.Send(new DeletePropertyCommand(id));
             return NoContent();
 
+        }
+
+        // Upload image for a property
+        [HttpPost("{id}/images")]
+        [Authorize(Roles = "Owner, Admin")]
+        public async Task<IActionResult> UploadImage(int id, IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return BadRequest(new {message = "No image provided"});
+
+            using var stream = image.OpenReadStream();
+
+            var command = new AddPropertyImageCommand
+            {
+                PropertyId = id,
+                ImageStream = stream,
+                FileName = image.FileName
+            };
+
+            var imageUrl = await _mediator.Send(command);
+            return Ok(new { imageUrl });
         }
     }
 }
