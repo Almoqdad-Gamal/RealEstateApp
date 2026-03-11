@@ -8,6 +8,7 @@ namespace RealEstateApp.Application.Interfaces
         Task<bool> EmailExistsAsync(string email);
         Task<User?> GetUserWithPropertiesAsync(int userId);
         Task<User?> GetByResetToken(string token);
+        Task<User?> GetByRefreshToken(string refreshToken);
 
 
     }

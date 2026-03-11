@@ -16,7 +16,7 @@ namespace RealEstateApp.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateAccessToken(User user)
         {
             // The user data that will be put in the token
             var claims = new List<Claim>
@@ -40,13 +40,21 @@ namespace RealEstateApp.Infrastructure.Services
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(
-                    int.Parse(_configuration["JwtSettings:ExpiryInDays"]!)),
+                expires: DateTime.UtcNow.AddMinutes(
+                    int.Parse(_configuration["JwtSettings:ExpiryInMinutes"]!)),
                 signingCredentials: credentials
             );
 
             // Convert token to a string
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            // Generate random bytes then convert it to string
+            return Convert.ToHexString(
+                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+            );
         }
     }
 }

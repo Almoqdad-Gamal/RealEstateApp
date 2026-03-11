@@ -28,13 +28,20 @@ namespace RealEstateApp.Application.Features.Users.Commands.Login
                 throw new UnauthorizedException("Incorrect email or password.");
 
             // Create jwt token
-            var token = _jwtService.GenerateToken(user);
+            var accessToken = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            // Save the refresh token in the database
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveChangesAsync();
 
             // Return token with user data
             return new LoginResponseDto
             {
-                Token = token,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7),
                 User = new UserDto
                 {
                     ID = user.Id,

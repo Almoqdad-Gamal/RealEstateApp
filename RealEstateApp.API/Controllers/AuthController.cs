@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Application.Features.Users.Commands.ForgetPassword;
 using RealEstateApp.Application.Features.Users.Commands.Login;
+using RealEstateApp.Application.Features.Users.Commands.RefreshToken;
 using RealEstateApp.Application.Features.Users.Commands.RegisterUser;
 using RealEstateApp.Application.Features.Users.Commands.ResetPassword;
 
@@ -33,7 +34,7 @@ namespace RealEstateApp.API.Controllers
                 return Ok(result);
         }
 
-        [HttpPost("Forget-password")]
+        [HttpPost("forget-password")]
         public async Task<IActionResult> ForgetPassword ([FromBody] ForgetPasswordCommand command)
         {
             await _mediator.Send(command);
@@ -42,11 +43,18 @@ namespace RealEstateApp.API.Controllers
             return Ok(new {message = "If this email exists, a reset link has been sent."});
         }
 
-        [HttpPost("Reset-password")]
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword ([FromBody] ResetPasswordCommand command)
         {
             await _mediator.Send(command);
             return Ok(new {message = "Password has been reset successfully."});
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken ([FromBody] RefreshTokenCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
