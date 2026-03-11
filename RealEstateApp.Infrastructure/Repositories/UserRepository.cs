@@ -20,6 +20,11 @@ namespace RealEstateApp.Infrastructure.Repositories
             return await _dbset.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
+        public async Task<User?> GetByResetToken(string token)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == token);
+        }
+
         public async Task<User?> GetUserWithPropertiesAsync(int userId)
         {
             return await _dbset

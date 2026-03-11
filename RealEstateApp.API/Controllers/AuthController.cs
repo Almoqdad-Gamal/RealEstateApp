@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RealEstateApp.Application.Features.Users.Commands.ForgetPassword;
 using RealEstateApp.Application.Features.Users.Commands.Login;
 using RealEstateApp.Application.Features.Users.Commands.RegisterUser;
+using RealEstateApp.Application.Features.Users.Commands.ResetPassword;
 
 namespace RealEstateApp.API.Controllers
 {
@@ -29,6 +31,22 @@ namespace RealEstateApp.API.Controllers
         {
                 var result = await _mediator.Send(command);
                 return Ok(result);
+        }
+
+        [HttpPost("Forget-password")]
+        public async Task<IActionResult> ForgetPassword ([FromBody] ForgetPasswordCommand command)
+        {
+            await _mediator.Send(command);
+
+            // We always send the same message, whether the email exists or not
+            return Ok(new {message = "If this email exists, a reset link has been sent."});
+        }
+
+        [HttpPost("Reset-password")]
+        public async Task<IActionResult> ResetPassword ([FromBody] ResetPasswordCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok(new {message = "Password has been reset successfully."});
         }
     }
 }

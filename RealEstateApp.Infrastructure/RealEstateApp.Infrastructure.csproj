@@ -15,6 +15,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+  <Content Include="Templates\**\*.html">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </Content>
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

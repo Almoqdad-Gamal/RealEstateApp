@@ -12,6 +12,8 @@ namespace RealEstateApp.Domain.Entities
         public string PhoneNumber { get; set; } = string.Empty;
         public UserRole Role { get; set; } = UserRole.Client;
         public string? ProfileImageUrl { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpiry { get; set; }
 
         // Navigation Properties
         public ICollection<Property> Properties { get; set; } = new List<Property>();
