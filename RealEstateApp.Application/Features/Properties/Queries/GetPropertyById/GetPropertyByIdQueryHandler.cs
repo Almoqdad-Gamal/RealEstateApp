@@ -9,14 +9,23 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetPropertyById
     public class GetPropertyByIdQueryHandler : IRequestHandler<GetPropertyByIdQuery, PropertyDto>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
 
-        public GetPropertyByIdQueryHandler(IUnitOfWork unitOfWork)
+        public GetPropertyByIdQueryHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
 
         public async Task<PropertyDto> Handle(GetPropertyByIdQuery request, CancellationToken cancellationToken)
         {
+            var cacheKey = $"property_{request.PropertyId}";
+
+            var cached = await _cache.GetAsync<PropertyDto>(cacheKey);
+            if(cached != null)
+                return cached;
+
+
             var property = await _unitOfWork.Properties.GetPropertyWithDetailsAsync(request.PropertyId);
 
             if (property == null)
@@ -25,7 +34,7 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetPropertyById
             // Calculate average rating
             var avgRating = await _unitOfWork.Reviews.GetPropertyAverageRatingAsync(property.Id);
 
-            return new PropertyDto
+            var dto = new PropertyDto
             {
                 Id = property.Id,
                 Title = property.Title,
@@ -57,6 +66,10 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetPropertyById
                 ReviewCount = property.Reviews.Count,
                 CreatedAt = property.CreatedAt
             };
+
+            await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
+
+            return dto;
         }
     }
 }

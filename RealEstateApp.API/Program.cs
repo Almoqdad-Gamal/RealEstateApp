@@ -11,6 +11,7 @@ using RealEstateApp.Infrastructure.Data;
 using RealEstateApp.Infrastructure.Repositories;
 using RealEstateApp.Infrastructure.Services;
 using Scalar.AspNetCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,13 @@ options.UseSqlServer(
     b => b.MigrationsAssembly("RealEstateApp.Infrastructure")
 ));
 
+//---------- Redis -----------------------------------------------------------------------
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(
+        builder.Configuration.GetConnectionString("Redis")!
+    )
+);
+
 //---------- Repository Pattern & Unit of Work -------------------------------------------
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -29,6 +37,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IImageService, CloudinaryService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 //---------- JWT Service -----------------------------------------------------------------

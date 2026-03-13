@@ -10,9 +10,11 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
     public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyCommand, PropertyDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreatePropertyCommandHandler(IUnitOfWork unitOfWork)
+        private readonly ICacheService _cache;
+        public CreatePropertyCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<PropertyDto> Handle(CreatePropertyCommand request, CancellationToken cancellationToken)
         {
@@ -54,6 +56,8 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
             //Add to repository and save 
             await _unitOfWork.Properties.AddAsync(property);
             await _unitOfWork.SaveChangesAsync();
+            // Clear all the cache related to the properties
+            await _cache.RemoveByPrefixAsync("properties_all");
 
             //Return DTO
             return new PropertyDto

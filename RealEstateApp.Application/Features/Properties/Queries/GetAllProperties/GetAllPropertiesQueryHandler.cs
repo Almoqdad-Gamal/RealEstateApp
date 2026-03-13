@@ -8,13 +8,23 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
     public class GetAllPropertiesQueryHandler : IRequestHandler<GetAllPropertiesQuery, PaginatedResult<PropertyDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
 
-        public GetAllPropertiesQueryHandler(IUnitOfWork unitOfWork)
+        public GetAllPropertiesQueryHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<PaginatedResult<PropertyDto>> Handle(GetAllPropertiesQuery request, CancellationToken cancellationToken)
         {
+            // Cache key changes with each page
+            var cacheKey = $"properties_all_page{request.PageNumber}_size{request.PageSize}";
+            
+            // Look if there is any keys in the cache
+            var cached = await _cache.GetAsync<PaginatedResult<PropertyDto>>(cacheKey);
+            if(cached != null)
+                return cached;
+
             var pagination = new PaginationParams
             {
                 PageNumber = request.PageNumber,
@@ -53,13 +63,18 @@ namespace RealEstateApp.Application.Features.Properties.Queries.GetAllProperties
                 CreatedAt = p.CreatedAt
             }).ToList();
 
-            return new PaginatedResult<PropertyDto>
+            var paginatedResult = new PaginatedResult<PropertyDto>
             {
                 Items = dtos,
                 TotalCount = result.TotalCount,
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize
             };
+
+            // Save in the cache for 5 minutes
+            await _cache.SetAsync(cacheKey, paginatedResult, TimeSpan.FromMinutes(5));
+
+            return paginatedResult;
         }
     }
 }

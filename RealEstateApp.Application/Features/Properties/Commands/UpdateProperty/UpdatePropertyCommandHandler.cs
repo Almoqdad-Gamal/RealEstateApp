@@ -8,10 +8,12 @@ namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
     public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand, PropertyDto>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
 
-        public UpdatePropertyCommandHandler(IUnitOfWork unitOfWork)
+        public UpdatePropertyCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<PropertyDto> Handle(UpdatePropertyCommand request, CancellationToken cancellationToken)
         {
@@ -52,6 +54,8 @@ namespace RealEstateApp.Application.Features.Properties.Commands.UpdateProperty
             //Update in repository
             _unitOfWork.Properties.Update(property);
             await _unitOfWork.SaveChangesAsync();
+            await _cache.RemoveByPrefixAsync("properties_all");
+            await _cache.RemoveAsync($"property_{request.Id}");
 
             //Calculate average rating
             var avgRating = await _unitOfWork.Reviews.GetPropertyAverageRatingAsync(property.Id);

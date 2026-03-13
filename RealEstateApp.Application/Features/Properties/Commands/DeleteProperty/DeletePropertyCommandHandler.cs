@@ -7,10 +7,12 @@ namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
     public class DeletePropertyCommandHandler : IRequestHandler<DeletePropertyCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
 
-        public DeletePropertyCommandHandler(IUnitOfWork unitOfWork)
+        public DeletePropertyCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task Handle(DeletePropertyCommand request, CancellationToken cancellationToken)
         {
@@ -24,6 +26,8 @@ namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
             //Soft delete
             _unitOfWork.Properties.Delete(property);
             await _unitOfWork.SaveChangesAsync();
+            await _cache.RemoveByPrefixAsync("properties_all");
+            await _cache.RemoveAsync($"property_{request.Id}");
         }
     }
 }
