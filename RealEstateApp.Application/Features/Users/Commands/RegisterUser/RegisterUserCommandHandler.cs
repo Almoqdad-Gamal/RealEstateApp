@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.User;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -9,9 +10,11 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public RegisterUserCommandHandler(IUnitOfWork unitOfWork)
+        private readonly ILogger<RegisterUserCommandHandler> _logger;
+        public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ILogger<RegisterUserCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
@@ -24,6 +27,8 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
             //Hash password
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+            
+
             //Create user entity
             var user = new User
             {
@@ -35,8 +40,12 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
                 Role = request.Role
             };
 
+
             //Add to repository
             await _unitOfWork.Users.AddAsync(user);
+
+            _logger.LogInformation("New user registered with email: {Email}", request.Email);
+            
             await _unitOfWork.SaveChangesAsync();
 
             //Map to DTO and return 

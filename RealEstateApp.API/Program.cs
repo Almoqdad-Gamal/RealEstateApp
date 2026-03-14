@@ -12,8 +12,16 @@ using RealEstateApp.Infrastructure.Repositories;
 using RealEstateApp.Infrastructure.Services;
 using Scalar.AspNetCore;
 using StackExchange.Redis;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//---------- Serilog ---------------------------------------------------------------------
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 //---------- Database --------------------------------------------------------------------
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
@@ -94,6 +102,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 

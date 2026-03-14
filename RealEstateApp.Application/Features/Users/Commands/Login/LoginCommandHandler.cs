@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.User;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -9,23 +10,33 @@ namespace RealEstateApp.Application.Features.Users.Commands.Login
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtService _jwtService;
+        private readonly ILogger<LoginCommandHandler> _logger;
 
-        public LoginCommandHandler(IUnitOfWork unitOfWork, IJwtService jwtService)
+        public LoginCommandHandler(IUnitOfWork unitOfWork, IJwtService jwtService, ILogger<LoginCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _jwtService = jwtService;
+            _logger = logger;
         }
         public async Task<LoginResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             // Search the user by his email
             var user = await _unitOfWork.Users.GetByEmailAsync(request.Email);
             if(user == null)
+            {
+                _logger.LogWarning("Failed login attempt for email: {Email}", request.Email);
                 throw new UnauthorizedException("Incorrect email or password.");
+            }
 
             // Check the password
             var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
             if(!isPasswordValid)
+            {
+                _logger.LogWarning("Failed login attempt for email: {Email}", request.Email);
                 throw new UnauthorizedException("Incorrect email or password.");
+            }
+
+            _logger.LogInformation("User {UserId} logged in successfully.", user.Id);
 
             // Create jwt token
             var accessToken = _jwtService.GenerateAccessToken(user);

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.Property;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -11,10 +12,12 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cache;
-        public CreatePropertyCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
+        private readonly ILogger<CreatePropertyCommandHandler> _logger;
+        public CreatePropertyCommandHandler(IUnitOfWork unitOfWork, ICacheService cache, ILogger<CreatePropertyCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _cache = cache;
+            _logger = logger;
         }
         public async Task<PropertyDto> Handle(CreatePropertyCommand request, CancellationToken cancellationToken)
         {
@@ -55,6 +58,9 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
 
             //Add to repository and save 
             await _unitOfWork.Properties.AddAsync(property);
+
+            _logger.LogInformation("Property created with ID: {PropertyId} by Owner: {OwnerId}", property.Id, property.OwnerId);
+            
             await _unitOfWork.SaveChangesAsync();
             // Clear all the cache related to the properties
             await _cache.RemoveByPrefixAsync("properties_all");
