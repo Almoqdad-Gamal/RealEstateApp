@@ -27,7 +27,7 @@ namespace RealEstateApp.API.Controllers
         }
 
         // Login and get jwt token
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login ([FromBody] LoginCommand command)
         {
                 var result = await _mediator.Send(command);
