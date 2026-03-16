@@ -8,6 +8,7 @@ using RealEstateApp.Application.Features.Properties.Commands.DeleteProperty;
 using RealEstateApp.Application.Features.Properties.Commands.UpdateProperty;
 using RealEstateApp.Application.Features.Properties.Queries.GetAllProperties;
 using RealEstateApp.Application.Features.Properties.Queries.GetAllProperties.GetPropertyById;
+using RealEstateApp.Application.Features.Properties.Queries.GetPropertiesByOwner;
 using RealEstateApp.Application.Features.Properties.Queries.SearchProperties;
 
 namespace RealEstateApp.API.Controllers
@@ -104,6 +105,13 @@ namespace RealEstateApp.API.Controllers
 
             var imageUrl = await _mediator.Send(command);
             return Ok(new { imageUrl });
+        }
+
+        [HttpGet("owner/{ownerId}")]
+        [Authorize(Roles = "Owner, Admin")]
+        public async Task<IActionResult> GetByOwner (int ownerId)
+        {
+            return Ok(await _mediator.Send(new GetPropertiesByOwnerQuery(ownerId)));
         }
     }
 }
