@@ -42,6 +42,9 @@ namespace RealEstateApp.Application.Features.Users.Commands.Login
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
 
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
             // Save the refresh token in the database
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();

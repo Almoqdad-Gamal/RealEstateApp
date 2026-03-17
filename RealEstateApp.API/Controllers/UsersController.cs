@@ -28,7 +28,7 @@ namespace RealEstateApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileCommand command)
         {
             command.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

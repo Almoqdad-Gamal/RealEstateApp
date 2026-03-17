@@ -27,8 +27,6 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
             //Hash password
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            
-
             //Create user entity
             var user = new User
             {
@@ -40,14 +38,13 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
                 Role = request.Role
             };
 
-
             //Add to repository
             await _unitOfWork.Users.AddAsync(user);
-
-            _logger.LogInformation("New user registered with email: {Email}", request.Email);
             
             await _unitOfWork.SaveChangesAsync();
 
+            _logger.LogInformation("New user registered with email: {Email}", request.Email);
+            
             //Map to DTO and return 
             return new UserDto
             {

@@ -10,10 +10,12 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CancelBooking
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CancelBookingCommandHandler> _logger;
-        public CancelBookingCommandHandler(IUnitOfWork unitOfWork,ILogger<CancelBookingCommandHandler> logger)
+        private readonly ICacheService _cache;
+        public CancelBookingCommandHandler(IUnitOfWork unitOfWork,ILogger<CancelBookingCommandHandler> logger, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _cache = cache;
             
         }
         public async Task Handle(CancelBookingCommand request, CancellationToken cancellationToken)
@@ -37,6 +39,9 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CancelBooking
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Booking {BookingId} cancelled by User {UserId}.", request.BookingId, request.RequestingUserId);
+
+            await _cache.RemoveAsync($"bookings_user_{booking.ClientId}");
+
         }
     }
 }

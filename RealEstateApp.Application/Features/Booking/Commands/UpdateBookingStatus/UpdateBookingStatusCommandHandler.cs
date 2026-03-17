@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.Booking;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -8,14 +9,15 @@ namespace RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatu
     public class UpdateBookingStatusCommandHandler : IRequestHandler<UpdateBookingStatusCommand, BookingDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public UpdateBookingStatusCommandHandler(IUnitOfWork unitOfWork)
+        private readonly ILogger<UpdateBookingStatusCommandHandler> _logger;
+        public UpdateBookingStatusCommandHandler(IUnitOfWork unitOfWork, ILogger<UpdateBookingStatusCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public async Task<BookingDto> Handle(UpdateBookingStatusCommand request, CancellationToken cancellationToken)
         {
-            var bookings = await _unitOfWork.Bookings.GetUserBookingsAsync(request.BookingId);
-            var booking = bookings.FirstOrDefault(b => b.Id == request.BookingId);
+            var booking = await _unitOfWork.Bookings.GetByIdAsync(request.BookingId);
 
             if(booking == null)
                 throw new NotFoundException("Booking", request.BookingId);
@@ -23,6 +25,7 @@ namespace RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatu
             booking.Status = request.Status;
             _unitOfWork.Bookings.Update(booking);
             await _unitOfWork.SaveChangesAsync();
+            _logger.LogInformation("Booking {BookingId} status updated to {Status}.", booking.Id, booking.Status);
 
             return new BookingDto
             {

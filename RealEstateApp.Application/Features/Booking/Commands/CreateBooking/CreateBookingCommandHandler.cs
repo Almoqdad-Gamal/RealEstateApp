@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.Booking;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -9,9 +10,13 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
     public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand, BookingDto>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreateBookingCommandHandler(IUnitOfWork unitOfWork)
+        private readonly ILogger<CreateBookingCommandHandler> _logger;
+        private readonly ICacheService _cache;
+        public CreateBookingCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateBookingCommandHandler> logger, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
+            _cache = cache;
         }
         public async Task<BookingDto> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
@@ -47,6 +52,11 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
 
             await _unitOfWork.Bookings.AddAsync(booking);
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Booking created with ID: {BookingId} for Property: {PropertyId} by Client: {ClientId}",
+                booking.Id, booking.PropertyId, booking.ClientId);
+
+            await _cache.RemoveAsync($"booking_user_{booking.ClientId}");
 
             return new BookingDto
             {

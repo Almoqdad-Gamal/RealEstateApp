@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Application.DTOs.Review;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
@@ -9,11 +10,13 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cache;
+        private readonly ILogger<CreateReviewCommandHandler> _logger;
         
-        public CreateReviewCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
+        public CreateReviewCommandHandler(IUnitOfWork unitOfWork, ICacheService cache, ILogger<CreateReviewCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _cache = cache;
+            _logger = logger;
         }
         public async Task<ReviewDto> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -43,6 +46,8 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
 
             await _unitOfWork.Reviews.AddAsync(review);
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Review created for Property: {PropertyId} by User: {UserId}", review.PropertyId, review.UserId);
 
             await _cache.RemoveAsync($"reviews_property_{review.PropertyId}");
             await _cache.RemoveAsync($"property_{review.PropertyId}");

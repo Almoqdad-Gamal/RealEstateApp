@@ -58,10 +58,10 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
 
             //Add to repository and save 
             await _unitOfWork.Properties.AddAsync(property);
+            await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Property created with ID: {PropertyId} by Owner: {OwnerId}", property.Id, property.OwnerId);
             
-            await _unitOfWork.SaveChangesAsync();
             // Clear all the cache related to the properties
             await _cache.RemoveByPrefixAsync("properties_all");
             await _cache.RemoveAsync($"properties_owner_{property.OwnerId}");
