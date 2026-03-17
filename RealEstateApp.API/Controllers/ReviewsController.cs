@@ -2,7 +2,9 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Application.Features.Review.Commands.CreateReview;
+using RealEstateApp.Application.Features.Review.Commands.DeleteReview;
 using RealEstateApp.Application.Features.Review.Queries.GetPropertyReviews;
 
 namespace RealEstateApp.API.Controllers
@@ -35,6 +37,17 @@ namespace RealEstateApp.API.Controllers
 
             var result = await _mediatr.Send(command);
             return CreatedAtAction(nameof(GetPropertyReviews), new {propertyId = result.PropertyId}, result);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> Delete (int id)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var command = new DeleteReviewCommand(id);
+            command.RequestingUserId = userId;
+            await _mediatr.Send(command);
+            return NoContent();
         }
     }
 }

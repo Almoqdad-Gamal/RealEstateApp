@@ -8,10 +8,12 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
     public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, ReviewDto>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
         
-        public CreateReviewCommandHandler(IUnitOfWork unitOfWork)
+        public CreateReviewCommandHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<ReviewDto> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -41,6 +43,10 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
 
             await _unitOfWork.Reviews.AddAsync(review);
             await _unitOfWork.SaveChangesAsync();
+
+            await _cache.RemoveAsync($"reviews_property_{review.PropertyId}");
+            await _cache.RemoveAsync($"property_{review.PropertyId}");
+
 
             return new ReviewDto
             {

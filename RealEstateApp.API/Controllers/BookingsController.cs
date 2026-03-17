@@ -2,8 +2,10 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RealEstateApp.Application.Features.Booking.Commands.CancelBooking;
 using RealEstateApp.Application.Features.Booking.Commands.CreateBooking;
 using RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatus;
+using RealEstateApp.Application.Features.Booking.Queries.GetBookingById;
 using RealEstateApp.Application.Features.Booking.Queries.GetUserBookings;
 
 namespace RealEstateApp.API.Controllers
@@ -47,6 +49,24 @@ namespace RealEstateApp.API.Controllers
                 command.BookingId = id;
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetById (int id)
+        {
+            return Ok(await _mediator.Send(new GetBookingByIdQuery(id)));
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Cancel (int id)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var command = new CancelBookingCommand(id);
+            command.RequestingUserId = userId;
+            await _mediator.Send(command);
+            return NoContent();
         }
 
     }
