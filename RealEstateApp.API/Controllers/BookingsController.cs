@@ -31,7 +31,7 @@ namespace RealEstateApp.API.Controllers
 
         // Create a new booking
         [HttpPost]
-        [Authorize(Roles = "Client, Admin")] // Only client can booking
+        [Authorize(Roles = "Client,Admin")] // Only client can booking
         public async Task<IActionResult> CreateBooking ([FromBody] CreateBookingCommand command)
         {
             var clientId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -43,7 +43,7 @@ namespace RealEstateApp.API.Controllers
 
         // Update the booking status
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Owner, Admin")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateBookingStatusCommand command)
         {
                 command.BookingId = id;

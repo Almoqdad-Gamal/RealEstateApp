@@ -21,6 +21,14 @@ namespace RealEstateApp.Infrastructure.Repositories
             .ToListAsync();
         }
 
+        public async Task<Booking?> GetBookingWithDetailsAsync(int bookingId)
+        {
+            return await _context.Bookings
+            .Include(b => b.Property)
+            .Include(b => b.Client)
+            .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
+
         public async Task<IEnumerable<Booking>> GetPropertyBookingsAsync(int propertyId)
         {
             return await _dbset

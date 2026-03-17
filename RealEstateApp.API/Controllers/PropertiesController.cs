@@ -50,7 +50,7 @@ namespace RealEstateApp.API.Controllers
 
         // Creates a new property
         [HttpPost]
-        [Authorize(Roles = "Owner, Admin")] // Only owner and admin can create property
+        [Authorize(Roles = "Owner,Admin")] // Only owner and admin can create property
         public async Task<IActionResult> Create ([FromBody] CreatePropertyCommand command)
         {
             var ownerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -62,7 +62,7 @@ namespace RealEstateApp.API.Controllers
 
         // Updates an existing property
         [HttpPut("{id}")]
-        [Authorize(Roles = "Owner, Admin")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> Update (int id, UpdatePropertyCommand command)
         {
             if (id != command.Id)
@@ -78,7 +78,7 @@ namespace RealEstateApp.API.Controllers
 
         // Deletes property by ID 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Owner, Admin")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> Delete (int id)
         {
             await _mediator.Send(new DeletePropertyCommand(id));
@@ -88,7 +88,7 @@ namespace RealEstateApp.API.Controllers
 
         // Upload image for a property
         [HttpPost("{id}/images")]
-        [Authorize(Roles = "Owner, Admin")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> UploadImage(int id, IFormFile image)
         {
             if (image == null || image.Length == 0)
@@ -108,7 +108,7 @@ namespace RealEstateApp.API.Controllers
         }
 
         [HttpGet("owner/{ownerId}")]
-        [Authorize(Roles = "Owner, Admin")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> GetByOwner (int ownerId)
         {
             return Ok(await _mediator.Send(new GetPropertiesByOwnerQuery(ownerId)));

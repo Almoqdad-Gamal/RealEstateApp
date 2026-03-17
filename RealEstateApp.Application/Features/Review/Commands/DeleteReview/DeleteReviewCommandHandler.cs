@@ -33,8 +33,8 @@ namespace RealEstateApp.Application.Features.Review.Commands.DeleteReview
 
             _logger.LogInformation("Review {ReviewId} deleted by User {UserId}.", request.ReviewId, request.RequestingUserId);
 
-            await _cache.RemoveAsync($"reviews_property_{review.UserId}");
-            await _cache.RemoveAsync($"property_{review.UserId}");
+            await _cache.RemoveAsync($"reviews_property_{review.PropertyId}");
+            await _cache.RemoveAsync($"property_{review.PropertyId}");
             
         }
     }

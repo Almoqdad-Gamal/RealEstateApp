@@ -9,6 +9,7 @@ namespace RealEstateApp.Application.Interfaces
         Task<IEnumerable<Booking>> GetPropertyBookingsAsync (int propertyId);
         Task<bool> IsPropertyAvilableAsync (int propertyId, DateTime bookingDate, TimeSpan bookingTime);
         Task<IEnumerable<Booking>> GetBookingsByStatesAsync (BookingStatus status);
+        Task<Booking?> GetBookingWithDetailsAsync(int bookingId);
         
     }
 }

@@ -17,7 +17,7 @@ namespace RealEstateApp.Application.Features.Booking.Commands.UpdateBookingStatu
         }
         public async Task<BookingDto> Handle(UpdateBookingStatusCommand request, CancellationToken cancellationToken)
         {
-            var booking = await _unitOfWork.Bookings.GetByIdAsync(request.BookingId);
+            var booking = await _unitOfWork.Bookings.GetBookingWithDetailsAsync(request.BookingId);
 
             if(booking == null)
                 throw new NotFoundException("Booking", request.BookingId);

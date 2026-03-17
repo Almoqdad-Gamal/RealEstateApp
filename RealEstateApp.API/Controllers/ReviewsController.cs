@@ -29,7 +29,7 @@ namespace RealEstateApp.API.Controllers
 
         // Create new review
         [HttpPost]
-        [Authorize(Roles = "Client, Admin")]
+        [Authorize(Roles = "Client,Admin")]
         public async Task<IActionResult> CreateReview ([FromBody] CreateReviewCommand command)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
