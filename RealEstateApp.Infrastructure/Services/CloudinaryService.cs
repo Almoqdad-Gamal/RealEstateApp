@@ -58,7 +58,7 @@ namespace RealEstateApp.Infrastructure.Services
         {
             var uri = new Uri(imageUrl);
             var segments = uri.Segments;
-            var uploadIndex = Array.IndexOf(segments, "upload./");
+            var uploadIndex = Array.IndexOf(segments, "upload/");
             var publicIdWithVersion = string.Join("", segments.Skip(uploadIndex + 2));
             return Path.GetFileNameWithoutExtension(publicIdWithVersion);
         }

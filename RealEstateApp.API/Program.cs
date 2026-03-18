@@ -97,6 +97,15 @@ builder.Services.AddOpenApi();
 //---------- Build App ------------------------------------------------------------------
 var app = builder.Build();
 
+//---------- Seeding super admin -------------------------------------------------------
+using (var scope = app.Services.CreateScope())
+{
+    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    await DatabaseSeeder.SeedAsync(unitOfWork, configuration);
+}
+
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

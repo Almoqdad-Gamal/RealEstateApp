@@ -21,10 +21,11 @@ namespace RealEstateApp.API.Controllers
         }
 
         // Getting the user bookings
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetUserBookings(int userId)
+        [HttpGet("my-bookings")]
+        [Authorize]
+        public async Task<IActionResult> GetUserBookings()
         {
-            
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var result = await _mediator.Send(new GetUserBookingsQuery(userId));
             return Ok(result);
         }
@@ -55,7 +56,16 @@ namespace RealEstateApp.API.Controllers
         [Authorize]
         public async Task<IActionResult> GetById (int id)
         {
-            return Ok(await _mediator.Send(new GetBookingByIdQuery(id)));
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var role = User.FindFirst(ClaimTypes.Role)!.Value;
+
+            var query = new GetBookingByIdQuery(id)
+            {
+                RequestingUserId = userId,
+                RequestingRole = role
+            };
+            
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpDelete("{id}")]

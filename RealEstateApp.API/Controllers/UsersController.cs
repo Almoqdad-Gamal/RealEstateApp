@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RealEstateApp.Application.Features.Users.Commands.CreateAdmin;
 using RealEstateApp.Application.Features.Users.Commands.UpdateProfile;
 using RealEstateApp.Application.Features.Users.Queries.GetProfile;
 
@@ -34,6 +35,14 @@ namespace RealEstateApp.API.Controllers
             command.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpPost("admins")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetProfile), result);
         }
 
     }

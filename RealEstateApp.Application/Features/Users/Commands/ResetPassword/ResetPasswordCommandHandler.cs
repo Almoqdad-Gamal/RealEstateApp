@@ -20,6 +20,9 @@ namespace RealEstateApp.Application.Features.Users.Commands.ResetPassword
             if (user == null)
                 throw new BadRequestException("Invalid or expired reset token.");
 
+            if (user.PasswordResetTokenExpiry < DateTime.UtcNow)
+                throw new BadRequestException("Reset token has expired.");
+
             // Change the password
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 

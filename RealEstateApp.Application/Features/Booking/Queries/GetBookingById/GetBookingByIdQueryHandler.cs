@@ -19,11 +19,21 @@ namespace RealEstateApp.Application.Features.Booking.Queries.GetBookingById
             if(booking == null)
                 throw new NotFoundException("Booking", request.BookingId);
 
+            var isClient = booking.ClientId == request.RequestingUserId;
+            var isOwner = booking.Property.OwnerId == request.RequestingUserId;
+            var isAdmin = request.RequestingRole == "Admin";
+
+            if (!isClient && !isOwner && !isAdmin)
+                throw new UnauthorizedException("You are not authorized to veiw this booking");
+
             return new BookingDto
             {
                 Id = booking.Id,
                 PropertyId = booking.PropertyId,
+                PropertyTitle = booking.Property.Title,
+                PropertyCity = booking.Property.City,
                 ClientId = booking.ClientId,
+                ClientName = $"{booking.Client.FirstName} {booking.Client.LastName}",
                 BookingDate = booking.BookingDate,
                 BookingTime = booking.BookingTime,
                 Status = booking.Status,

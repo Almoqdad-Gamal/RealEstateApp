@@ -4,6 +4,7 @@ using RealEstateApp.Application.DTOs.User;
 using RealEstateApp.Application.Exceptions;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Domain.Entities;
+using RealEstateApp.Domain.Enums;
 
 namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
 {
@@ -35,7 +36,7 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
                 Email = request.Email,
                 PasswordHash = passwordHash,
                 PhoneNumber = request.PhoneNumber,
-                Role = request.Role
+                Role = UserRole.Client
             };
 
             //Add to repository
