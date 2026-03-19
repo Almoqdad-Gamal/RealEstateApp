@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RealEstateApp.Application.Features.Users.Commands.ForgetPassword;
 using RealEstateApp.Application.Features.Users.Commands.Login;
 using RealEstateApp.Application.Features.Users.Commands.RefreshToken;
@@ -20,6 +21,7 @@ namespace RealEstateApp.API.Controllers
 
         // Register a new user
         [HttpPost("register")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
                 var result = await _mediator.Send(command);
@@ -28,6 +30,7 @@ namespace RealEstateApp.API.Controllers
 
         // Login and get jwt token
         [HttpPost("login")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> Login ([FromBody] LoginCommand command)
         {
                 var result = await _mediator.Send(command);
@@ -35,6 +38,7 @@ namespace RealEstateApp.API.Controllers
         }
 
         [HttpPost("forget-password")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> ForgetPassword ([FromBody] ForgetPasswordCommand command)
         {
             await _mediator.Send(command);
