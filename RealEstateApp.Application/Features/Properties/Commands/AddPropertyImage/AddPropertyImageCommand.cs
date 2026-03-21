@@ -7,5 +7,7 @@ namespace RealEstateApp.Application.Features.Properties.Commands.AddPropertyImag
         public int PropertyId { get; set; }
         public Stream ImageStream { get; set; } = null!;
         public string FileName { get; set; } = string.Empty;
+        public int RequestingUserId { get; set; }
+        public string RequestingRole { get; set; } = string.Empty;
     }
 }

@@ -1,17 +1,10 @@
-using System.Text;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using RealEstateApp.API.Middleware;
 using RealEstateApp.Application.Behaviors;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Infrastructure.Data;
-using RealEstateApp.Infrastructure.Repositories;
-using RealEstateApp.Infrastructure.Services;
 using Scalar.AspNetCore;
-using StackExchange.Redis;
 using Serilog;
 using RealEstateApp.API.Extensions;
 

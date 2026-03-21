@@ -39,7 +39,7 @@ namespace RealEstateApp.API.Controllers
             command.ClientId = clientId;
             
             var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetUserBookings), new {userId = result.ClientId}, result);
+            return Created(string.Empty, result);
         }
 
         // Update the booking status

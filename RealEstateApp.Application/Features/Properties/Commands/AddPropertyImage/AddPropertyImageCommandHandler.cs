@@ -21,6 +21,11 @@ namespace RealEstateApp.Application.Features.Properties.Commands.AddPropertyImag
             if (property == null)
                 throw new NotFoundException("Property", request.PropertyId);
 
+
+            if (property.OwnerId != request.RequestingUserId && request.RequestingRole != "Admin")
+                throw new UnauthorizedException("You can only upload images to your own properties.");
+
+            
             // Upload the photo on cloudinary
             var imageUrl = await _ImageService.UploadImageAsync(
                 request.ImageStream,

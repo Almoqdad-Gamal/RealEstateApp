@@ -81,7 +81,12 @@ namespace RealEstateApp.API.Controllers
         [Authorize(Roles = "Owner,Admin")]
         public async Task<IActionResult> Delete (int id)
         {
-            await _mediator.Send(new DeletePropertyCommand(id));
+            var command = new DeletePropertyCommand(id)
+            {
+                RequestingUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value),
+                RequestingRole = User.FindFirst(ClaimTypes.Role)!.Value
+            };
+            await _mediator.Send(command);
             return NoContent();
 
         }
@@ -100,16 +105,26 @@ namespace RealEstateApp.API.Controllers
             {
                 PropertyId = id,
                 ImageStream = stream,
-                FileName = image.FileName
+                FileName = image.FileName,
+                RequestingUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value),
+                RequestingRole = User.FindFirst(ClaimTypes.Role)!.Value
             };
 
             var imageUrl = await _mediator.Send(command);
             return Ok(new { imageUrl });
         }
 
+        [HttpGet("my-properties")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> GetMyProperties ()
+        {
+            var ownerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            return Ok(await _mediator.Send(new GetPropertiesByOwnerQuery(ownerId)));
+        }
+
         [HttpGet("owner/{ownerId}")]
-        [Authorize(Roles = "Owner,Admin")]
-        public async Task<IActionResult> GetByOwner (int ownerId)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetByOwner(int ownerId)
         {
             return Ok(await _mediator.Send(new GetPropertiesByOwnerQuery(ownerId)));
         }
