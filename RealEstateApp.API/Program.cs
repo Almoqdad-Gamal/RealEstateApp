@@ -7,6 +7,7 @@ using RealEstateApp.Infrastructure.Data;
 using Scalar.AspNetCore;
 using Serilog;
 using RealEstateApp.API.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,9 @@ var app = builder.Build();
 //---------- Seed Database -------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
+
     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     await DatabaseSeeder.SeedAsync(unitOfWork, configuration);
