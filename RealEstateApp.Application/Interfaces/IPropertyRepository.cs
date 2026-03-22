@@ -12,11 +12,23 @@ namespace RealEstateApp.Application.Interfaces
         Task<PaginatedResult<Property>> SearchPropertiesAsync(
             PaginationParams pagination,
             string? city = null,
+            string? country = null,
             PropertyType? type = null,
-            ListingType? listingType= null,
+            ListingType? listingType = null,
             decimal? minPrice = null,
             decimal? maxPrice = null,
-            int? minBedrooms = null
+            decimal? minArea = null,
+            decimal? maxArea = null,
+            int? minBedrooms = null,
+            int? maxBedrooms = null,
+            int? minBathrooms = null,
+            bool? hasPool = null,
+            bool? hasGym = null,
+            bool? hasGarden = null,
+            bool? hasSecurity = null,
+            bool? isFurnished = null,
+            string? sortBy = null,
+            string? sortOrder = null
         );
 
         Task<Property?> GetPropertyWithDetailsAsync(int id); 

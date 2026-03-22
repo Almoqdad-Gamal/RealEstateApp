@@ -24,11 +24,23 @@ namespace RealEstateApp.Application.Features.Properties.Queries.SearchProperties
             var result = await _unitOfWork.Properties.SearchPropertiesAsync(
                 pagination: pagination,
                 city: request.City,
+                country: request.Country,
                 type: request.Type,
                 listingType: request.ListingType,
                 minPrice: request.MinPrice,
                 maxPrice: request.MaxPrice,
-                minBedrooms: request.MinBedrooms
+                minArea: request.MinArea,
+                maxArea: request.MaxArea,
+                minBedrooms: request.MinBedrooms,
+                maxBedrooms: request.MaxBedrooms,
+                minBathrooms: request.MinBathrooms,
+                hasPool: request.HasPool,
+                hasGym: request.HasGym,
+                hasGarden: request.HasGarden,
+                hasSecurity: request.HasSecurity,
+                isFurnished: request.IsFurnished,
+                sortBy: request.SortBy,
+                sortOrder: request.SortOrder
             );
 
             var dtos = result.Items.Select(p => new PropertyDto

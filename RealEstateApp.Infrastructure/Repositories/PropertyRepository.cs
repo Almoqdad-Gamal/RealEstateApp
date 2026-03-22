@@ -66,7 +66,27 @@ namespace RealEstateApp.Infrastructure.Repositories
             .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<PaginatedResult<Property>> SearchPropertiesAsync(PaginationParams pagination, string? city = null, PropertyType? type = null, ListingType? listingType = null, decimal? minPrice = null, decimal? maxPrice = null, int? minBedrooms = null)
+        public async Task<PaginatedResult<Property>> SearchPropertiesAsync(
+            PaginationParams pagination,
+            string? city = null,
+            string? country = null,
+            PropertyType? type = null,
+            ListingType? listingType = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            decimal? minArea = null,
+            decimal? maxArea = null,
+            int? minBedrooms = null,
+            int? maxBedrooms = null,
+            int? minBathrooms = null,
+            bool? hasPool = null,
+            bool? hasGym = null,
+            bool? hasGarden = null,
+            bool? hasSecurity = null,
+            bool? isFurnished = null,
+            string? sortBy = null,
+            string? sortOrder = null
+        )
         {
             var query = _dbset
             .Include(p => p.Images)
@@ -77,6 +97,9 @@ namespace RealEstateApp.Infrastructure.Repositories
             //Apply filters
             if(!string.IsNullOrWhiteSpace(city))
                 query = query.Where(p => p.City.ToLower().Contains(city.ToLower()));
+
+            if(!string.IsNullOrWhiteSpace(country))
+                query = query.Where(p => p.Country.ToLower().Contains(country.ToLower()));
 
             if(type.HasValue)
                 query = query.Where(p => p.Type == type.Value);
@@ -90,9 +113,49 @@ namespace RealEstateApp.Infrastructure.Repositories
             if(maxPrice.HasValue)
                 query = query.Where(p => p.Price <= maxPrice.Value);
 
+            if (minArea.HasValue)
+                query = query.Where(p => p.Area >= minArea.Value);
+
+            if (maxArea.HasValue)
+                query = query.Where(p => p.Area <= maxArea.Value);
+
             if(minBedrooms.HasValue)
                 query = query.Where(p => p.Bedrooms >= minBedrooms.Value);
 
+            if(maxBedrooms.HasValue)
+                query = query.Where(p => p.Bedrooms <= maxBedrooms.Value);
+
+            if(minBathrooms.HasValue)
+                query = query.Where(p => p.Bathrooms >= minBathrooms.Value);
+
+            if (hasPool.HasValue)
+                query = query.Where(p => p.HasPool == hasPool.Value);
+
+            if (hasGym.HasValue)
+                query = query.Where(p => p.HasGym == hasGym.Value);
+
+            if (hasGarden.HasValue)
+                query = query.Where(p => p.HasGarden == hasGarden.Value);
+    
+            if (hasSecurity.HasValue)
+                query = query.Where(p => p.HasSecurity == hasSecurity.Value);
+
+            if (isFurnished.HasValue)
+                query = query.Where(p => p.IsFurnished == isFurnished.Value);
+
+            // Sorting
+            var isDescending = sortOrder?.ToLower() == "desc";
+
+            query = sortBy?.ToLower() switch
+            {
+                "price" => isDescending ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+                "area"  => isDescending ? query.OrderByDescending(p => p.Area)  : query.OrderBy(p => p.Area),
+                "bedrooms"=> isDescending ? query.OrderByDescending(p => p.Bedrooms) : query.OrderBy(p => p.Bedrooms),
+                    _     => query.OrderByDescending(p => p.CreatedAt) // Default
+            };
+
+
+            // Pagination
             var totalCount = await query.CountAsync();
 
             var items = await query
