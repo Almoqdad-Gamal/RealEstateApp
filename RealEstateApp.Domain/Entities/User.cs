@@ -21,6 +21,7 @@ namespace RealEstateApp.Domain.Entities
         public ICollection<Property> Properties { get; set; } = new List<Property>();
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
         
     }
 }

@@ -16,6 +16,8 @@ namespace RealEstateApp.Infrastructure.Repositories
         public IReviewRepository Reviews {get;}
         public IGenericRepository<PropertyImage> PropertyImages {get;}
 
+        public IFavoriteRepository Favorites {get;}
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -26,6 +28,7 @@ namespace RealEstateApp.Infrastructure.Repositories
             Bookings = new BookingRepository(_context);
             Reviews = new ReviewRepository(_context);
             PropertyImages = new GenericRepository<PropertyImage>(_context);
+            Favorites = new FavoriteRepository(_context);
 
         }
 

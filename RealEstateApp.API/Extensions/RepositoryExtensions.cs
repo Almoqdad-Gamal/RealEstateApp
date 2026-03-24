@@ -15,6 +15,7 @@ namespace RealEstateApp.API.Extensions
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IImageService, CloudinaryService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;

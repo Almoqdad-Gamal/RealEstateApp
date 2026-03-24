@@ -10,6 +10,7 @@ namespace RealEstateApp.Application.Interfaces
         IBookingRepository Bookings { get;}
         IReviewRepository Reviews { get;}
         IGenericRepository<PropertyImage> PropertyImages { get;}
+        IFavoriteRepository Favorites { get;}
 
         //Save Changes
         Task<int> SaveChangesAsync();
