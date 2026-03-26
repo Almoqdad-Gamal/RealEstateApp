@@ -35,6 +35,8 @@ namespace RealEstateApp.Application.Features.Review.Commands.DeleteReview
 
             await _cache.RemoveAsync($"reviews_property_{review.PropertyId}");
             await _cache.RemoveAsync($"property_{review.PropertyId}");
+
+            await _cache.RemoveAsync("admin_stats");
             
         }
     }

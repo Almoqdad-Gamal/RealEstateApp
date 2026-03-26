@@ -29,6 +29,8 @@ namespace RealEstateApp.Application.Features.Properties.Commands.DeleteProperty
             await _cache.RemoveByPrefixAsync("properties_all");
             await _cache.RemoveAsync($"property_{request.Id}");
             await _cache.RemoveAsync($"properties_owner_{property.OwnerId}");
+
+            await _cache.RemoveAsync("admin_stats");
         }
     }
 }

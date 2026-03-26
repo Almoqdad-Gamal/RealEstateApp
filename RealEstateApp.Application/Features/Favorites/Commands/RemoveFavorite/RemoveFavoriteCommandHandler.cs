@@ -29,6 +29,8 @@ namespace RealEstateApp.Application.Features.Favorites.Commands.RemoveFavorite
             _logger.LogInformation("User {UserId} removed property {PropertyId} from favorites.", request.UserId, request.PropertyId);
 
             await _cache.RemoveAsync($"properties_user_{request.UserId}");
+
+            await _cache.RemoveAsync("admin_stats");
         }
     }
 }

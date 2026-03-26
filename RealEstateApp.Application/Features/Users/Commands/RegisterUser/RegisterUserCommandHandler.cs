@@ -11,10 +11,12 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
         private readonly ILogger<RegisterUserCommandHandler> _logger;
-        public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ILogger<RegisterUserCommandHandler> logger)
+        public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ICacheService cache, ILogger<RegisterUserCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
             _logger = logger;
         }
         public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -45,6 +47,8 @@ namespace RealEstateApp.Application.Features.Users.Commands.RegisterUser
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("New user registered with email: {Email}", request.Email);
+            
+            await _cache.RemoveAsync("admin_stats");
             
             //Map to DTO and return 
             return new UserDto

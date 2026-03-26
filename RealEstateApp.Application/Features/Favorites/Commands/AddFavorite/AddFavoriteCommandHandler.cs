@@ -39,6 +39,8 @@ namespace RealEstateApp.Application.Features.Favorites.Commands.AddFavorite
             _logger.LogInformation("User {UserId} added property {PropertyId} to favorites.", request.UserId, request.PropertyId);
 
             await _cache.RemoveAsync($"favorites_user_{request.UserId}");
+
+            await _cache.RemoveAsync("admin_stats");
         }
     }
 }

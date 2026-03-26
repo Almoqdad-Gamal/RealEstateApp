@@ -57,6 +57,8 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
                 booking.Id, booking.PropertyId, booking.ClientId);
 
             await _cache.RemoveAsync($"booking_user_{booking.ClientId}");
+            
+            await _cache.RemoveAsync("admin_stats");
 
             return new BookingDto
             {

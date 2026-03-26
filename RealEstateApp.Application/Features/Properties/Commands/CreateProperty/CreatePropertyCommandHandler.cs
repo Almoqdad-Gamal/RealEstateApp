@@ -66,6 +66,8 @@ namespace RealEstateApp.Application.Features.Properties.Commands.CreateProperty
             await _cache.RemoveByPrefixAsync("properties_all");
             await _cache.RemoveAsync($"properties_owner_{property.OwnerId}");
 
+            await _cache.RemoveAsync("admin_stats");
+
             //Return DTO
             return new PropertyDto
             {

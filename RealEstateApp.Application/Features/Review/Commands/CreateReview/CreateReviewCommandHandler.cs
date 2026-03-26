@@ -52,6 +52,8 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
             await _cache.RemoveAsync($"reviews_property_{review.PropertyId}");
             await _cache.RemoveAsync($"property_{review.PropertyId}");
 
+            await _cache.RemoveAsync("admin_stats");
+
 
             return new ReviewDto
             {

@@ -42,6 +42,8 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CancelBooking
 
             await _cache.RemoveAsync($"bookings_user_{booking.ClientId}");
 
+            await _cache.RemoveAsync("admin_stats");
+
         }
     }
 }
