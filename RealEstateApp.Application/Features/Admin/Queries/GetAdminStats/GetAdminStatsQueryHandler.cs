@@ -20,7 +20,7 @@ namespace RealEstateApp.Application.Features.Admin.Queries.GetAdminStats
         }
         public async Task<AdminStatsDto> Handle(GetAdminStatsQuery request, CancellationToken cancellationToken)
         {
-            var cacheKey = "Admin_stats";
+            var cacheKey = "admin_stats";
             
             var cached = await _cache.GetAsync<AdminStatsDto>(cacheKey);
             if(cached != null)

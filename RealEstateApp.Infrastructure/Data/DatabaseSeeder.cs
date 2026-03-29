@@ -463,7 +463,7 @@ namespace RealEstateApp.Infrastructure.Data
                 }
             };
 
-            await unitOfWork.Bookings.AddRangeAsync(bookings);
+            await unitOfWork.Reviews.AddRangeAsync(reviews);
             await unitOfWork.SaveChangesAsync();
         }
     }

@@ -159,7 +159,6 @@ namespace RealEstateApp.Infrastructure.Repositories
             var totalCount = await query.CountAsync();
 
             var items = await query
-                .OrderByDescending(p => p.CreatedAt)
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
                 .ToListAsync();

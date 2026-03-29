@@ -2,7 +2,6 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Application.Features.Review.Commands.CreateReview;
 using RealEstateApp.Application.Features.Review.Commands.DeleteReview;
 using RealEstateApp.Application.Features.Review.Queries.GetPropertyReviews;

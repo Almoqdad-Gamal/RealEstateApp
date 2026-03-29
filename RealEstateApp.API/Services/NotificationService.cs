@@ -10,12 +10,14 @@ namespace RealEstateApp.API.Services
         private readonly IHubContext<NotificationHub, INotificationClient> _hubContext;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<NotificationService> _logger;
+        private readonly ICacheService _cache;
 
-        public NotificationService(IHubContext<NotificationHub, INotificationClient> hubContext, IUnitOfWork unitOfWork, ILogger<NotificationService> logger)
+        public NotificationService(IHubContext<NotificationHub, INotificationClient> hubContext, IUnitOfWork unitOfWork, ILogger<NotificationService> logger, ICacheService cache)
         {
             _hubContext = hubContext;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _cache = cache;
         }
         public async Task SendNotificationAsync(int userId, string title, string message, string type)
         {
@@ -30,6 +32,8 @@ namespace RealEstateApp.API.Services
             await _unitOfWork.Notifications.AddAsync(notification);
             await _unitOfWork.SaveChangesAsync();
 
+            await _cache.RemoveAsync($"notifications_user_{userId}");
+
             _logger.LogInformation("Notification sent to user {UserId}: {Title}", userId, title);
 
             await _hubContext.Clients
@@ -43,6 +47,7 @@ namespace RealEstateApp.API.Services
                     notification.IsRead,
                     CreatedAt = notification.CreatedAt
                 });
+                
         }
     }
 }
