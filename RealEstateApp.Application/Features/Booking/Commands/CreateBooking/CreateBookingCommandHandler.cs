@@ -12,11 +12,13 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateBookingCommandHandler> _logger;
         private readonly ICacheService _cache;
-        public CreateBookingCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateBookingCommandHandler> logger, ICacheService cache)
+        private readonly INotificationService _notificationService;
+        public CreateBookingCommandHandler(IUnitOfWork unitOfWork, ILogger<CreateBookingCommandHandler> logger, ICacheService cache, INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _cache = cache;
+            _notificationService = notificationService;
         }
         public async Task<BookingDto> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
@@ -52,6 +54,13 @@ namespace RealEstateApp.Application.Features.Booking.Commands.CreateBooking
 
             await _unitOfWork.Bookings.AddAsync(booking);
             await _unitOfWork.SaveChangesAsync();
+
+            await _notificationService.SendNotificationAsync(
+                userId: property.OwnerId,
+                title: "New Booking Request",
+                message: $"{client.FirstName} {client.LastName} requested a booking for your property '{property.Title}'.",
+                type: "NewBooking"
+                );
 
             _logger.LogInformation("Booking created with ID: {BookingId} for Property: {PropertyId} by Client: {ClientId}",
                 booking.Id, booking.PropertyId, booking.ClientId);

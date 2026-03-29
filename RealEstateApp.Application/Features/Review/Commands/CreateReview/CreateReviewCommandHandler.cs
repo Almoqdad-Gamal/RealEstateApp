@@ -11,12 +11,14 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheService _cache;
         private readonly ILogger<CreateReviewCommandHandler> _logger;
+        private readonly INotificationService _notificationService;
         
-        public CreateReviewCommandHandler(IUnitOfWork unitOfWork, ICacheService cache, ILogger<CreateReviewCommandHandler> logger)
+        public CreateReviewCommandHandler(IUnitOfWork unitOfWork, ICacheService cache, ILogger<CreateReviewCommandHandler> logger, INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _cache = cache;
             _logger = logger;
+            _notificationService = notificationService;
         }
         public async Task<ReviewDto> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
@@ -46,6 +48,13 @@ namespace RealEstateApp.Application.Features.Review.Commands.CreateReview
 
             await _unitOfWork.Reviews.AddAsync(review);
             await _unitOfWork.SaveChangesAsync();
+
+            await _notificationService.SendNotificationAsync(
+                userId: property.OwnerId,
+                title: "New Review",
+                message: $"{user.FirstName} {user.LastName} left a {request.Rating}-star review on '{property.Title}'.",
+                type: "NewReview"
+            );
 
             _logger.LogInformation("Review created for Property: {PropertyId} by User: {UserId}", review.PropertyId, review.UserId);
 

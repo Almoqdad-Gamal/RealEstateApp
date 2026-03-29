@@ -11,6 +11,7 @@ namespace RealEstateApp.Application.Interfaces
         IReviewRepository Reviews { get;}
         IGenericRepository<PropertyImage> PropertyImages { get;}
         IFavoriteRepository Favorites { get;}
+        INotificationRepository Notifications { get;}
 
         //Save Changes
         Task<int> SaveChangesAsync();

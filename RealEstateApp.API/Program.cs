@@ -8,6 +8,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using RealEstateApp.API.Extensions;
 using Microsoft.EntityFrameworkCore;
+using RealEstateApp.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,9 @@ builder.Services.AddCache(builder.Configuration);
 builder.Services.AddCorsPolicy(builder.Configuration);
 builder.Services.AddRateLimiting();
 builder.Services.AddHealthChecksServices(builder.Configuration);
+
+//---------- SignalR ---------------------------------------------------------------------
+builder.Services.AddSignalR();
 
 //---------- MediatR ---------------------------------------------------------------------
 builder.Services.AddMediatR(cfg => 
@@ -77,6 +81,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.UseHealthChecksEndpoint();
 

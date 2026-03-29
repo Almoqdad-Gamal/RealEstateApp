@@ -15,6 +15,7 @@ namespace RealEstateApp.Infrastructure.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,7 @@ namespace RealEstateApp.Infrastructure.Data
             modelBuilder.Entity<Booking>().HasQueryFilter(b => !b.IsDeleted);
             modelBuilder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);
             modelBuilder.Entity<Favorite>().HasQueryFilter(f => !f.IsDeleted);
+            modelBuilder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
         }
 
         //Override SaveChanges to update UpdatedAt Automaticly

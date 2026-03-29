@@ -1,3 +1,4 @@
+using RealEstateApp.API.Services;
 using RealEstateApp.Application.Interfaces;
 using RealEstateApp.Infrastructure.Repositories;
 using RealEstateApp.Infrastructure.Services;
@@ -16,6 +17,9 @@ namespace RealEstateApp.API.Extensions
             services.AddScoped<IImageService, CloudinaryService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<INotificationService,NotificationService>();
+
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;

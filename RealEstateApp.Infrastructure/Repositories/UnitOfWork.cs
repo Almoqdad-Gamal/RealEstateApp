@@ -17,6 +17,7 @@ namespace RealEstateApp.Infrastructure.Repositories
         public IGenericRepository<PropertyImage> PropertyImages {get;}
 
         public IFavoriteRepository Favorites {get;}
+        public INotificationRepository Notifications {get;}
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -29,6 +30,7 @@ namespace RealEstateApp.Infrastructure.Repositories
             Reviews = new ReviewRepository(_context);
             PropertyImages = new GenericRepository<PropertyImage>(_context);
             Favorites = new FavoriteRepository(_context);
+            Notifications = new NotificationRepository(_context);
 
         }
 
